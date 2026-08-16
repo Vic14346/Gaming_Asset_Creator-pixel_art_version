@@ -1,0 +1,1146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="AI Gaming Asset Generator - Create pixel art assets with AI">
+    <meta name="theme-color" content="#1a1a2e">
+    <title>AI Gaming Asset Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            animation: fadeIn 0.8s ease-in;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #00d4ff, #7c3aed);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .subtitle {
+            color: #a0aec0;
+            font-size: 1.1em;
+            font-weight: 300;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(124, 58, 237, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .panel:hover {
+            border-color: rgba(124, 58, 237, 0.6);
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 12px 48px rgba(0, 0, 0, 0.15);
+        }
+
+        .panel h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #00d4ff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #cbd5e0;
+            font-size: 0.95em;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .asset-type-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .asset-btn,
+        .animation-btn {
+            padding: 12px;
+            border: 2px solid rgba(124, 58, 237, 0.3);
+            background: rgba(124, 58, 237, 0.1);
+            color: #ffffff;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85em;
+            letter-spacing: 0.5px;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .asset-btn:hover,
+        .animation-btn:hover {
+            border-color: #7c3aed;
+            background: rgba(124, 58, 237, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(124, 58, 237, 0.2);
+        }
+
+        .asset-btn:focus,
+        .animation-btn:focus {
+            outline: 2px solid #00d4ff;
+            outline-offset: 2px;
+        }
+
+        .asset-btn.active,
+        .animation-btn.active {
+            border-color: #00d4ff;
+            background: rgba(0, 212, 255, 0.3);
+            box-shadow: 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+
+        textarea {
+            width: 100%;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(124, 58, 237, 0.3);
+            border-radius: 8px;
+            color: #ffffff;
+            font-family: 'Segoe UI', sans-serif;
+            font-size: 0.95em;
+            resize: vertical;
+            min-height: 100px;
+            max-height: 200px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            line-height: 1.5;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: #00d4ff;
+            background: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 0 10px rgba(0, 212, 255, 0.2);
+        }
+
+        textarea::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .btn {
+            padding: 12px 30px;
+            background: linear-gradient(45deg, #00d4ff, #7c3aed);
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            user-select: none;
+            -webkit-user-select: none;
+            box-shadow: 0 4px 15px rgba(0, 212, 255, 0.2);
+        }
+
+        .btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(0, 212, 255, 0.4);
+        }
+
+        .btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        .btn:focus {
+            outline: 2px solid #00d4ff;
+            outline-offset: 2px;
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-secondary {
+            background: rgba(124, 58, 237, 0.3);
+            border: 2px solid #7c3aed;
+            box-shadow: 0 4px 15px rgba(124, 58, 237, 0.2);
+        }
+
+        .btn-secondary:hover:not(:disabled) {
+            background: rgba(124, 58, 237, 0.5);
+            box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3);
+        }
+
+        .preview-panel {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(124, 58, 237, 0.3);
+            border-radius: 15px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+            text-align: center;
+            display: none;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .preview-panel.active {
+            display: block;
+            animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .preview-panel h2 {
+            font-size: 1.5em;
+            margin-bottom: 20px;
+            color: #00d4ff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        .asset-display {
+            background: rgba(0, 0, 0, 0.3);
+            border: 2px solid rgba(0, 212, 255, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            min-height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #assetCanvas {
+            max-width: 100%;
+            max-height: 300px;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+            display: block;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .button-group .btn {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .animation-section {
+            background: rgba(0, 0, 0, 0.2);
+            border: 2px solid rgba(0, 212, 255, 0.2);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .animation-section.active {
+            display: block;
+            animation: slideIn 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .animation-section h3 {
+            color: #00d4ff;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .animation-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .animation-btn {
+            padding: 10px;
+        }
+
+        #animationButtonGroup {
+            display: none;
+            margin-top: 15px;
+        }
+
+        #animationButtonGroup.active {
+            display: flex;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            margin: 20px 0;
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .spinner {
+            border: 4px solid rgba(0, 212, 255, 0.2);
+            border-top: 4px solid #00d4ff;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            display: none;
+            animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 500;
+        }
+
+        .message.active {
+            display: block;
+        }
+
+        .message.success {
+            background: rgba(34, 197, 94, 0.2);
+            border: 2px solid #22c55e;
+            color: #86efac;
+        }
+
+        .message.error {
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid #ef4444;
+            color: #fca5a5;
+        }
+
+        .message.info {
+            background: rgba(59, 130, 246, 0.2);
+            border: 2px solid #3b82f6;
+            color: #93c5fd;
+        }
+
+        .info-text {
+            color: #a0aec0;
+            font-size: 0.9em;
+            margin-top: 10px;
+            font-weight: 400;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .asset-type-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .animation-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .button-group .btn {
+                min-width: auto;
+            }
+
+            .panel,
+            .preview-panel {
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 1.5em;
+            }
+
+            .asset-type-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .panel,
+            .preview-panel {
+                padding: 15px;
+            }
+
+            .btn {
+                padding: 10px 20px;
+                font-size: 0.9em;
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🎮 AI Gaming Asset Generator</h1>
+            <p class="subtitle">Create pixel art assets with AI - Characters, Props, Backgrounds & More</p>
+        </header>
+
+        <div class="main-content">
+            <div class="panel">
+                <h2>Create Asset</h2>
+                
+                <div class="form-group">
+                    <label for="assetTypeGroup">Asset Type</label>
+                    <div class="asset-type-grid" id="assetTypeGroup" role="group" aria-label="Asset type selection">
+                        <button class="asset-btn active" data-type="character" aria-pressed="true">👤 Character</button>
+                        <button class="asset-btn" data-type="prop" aria-pressed="false">🎁 Prop</button>
+                        <button class="asset-btn" data-type="background" aria-pressed="false">🏞️ Background</button>
+                        <button class="asset-btn" data-type="enemy" aria-pressed="false">👹 Enemy</button>
+                        <button class="asset-btn" data-type="item" aria-pressed="false">⚔️ Item</button>
+                        <button class="asset-btn" data-type="effect" aria-pressed="false">✨ Effect</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Describe Your Asset</label>
+                    <textarea 
+                        id="description" 
+                        placeholder="E.g., A brave knight with blue armor, holding a golden sword..."
+                        aria-describedby="descriptionHint"
+                        maxlength="500">
+                    </textarea>
+                    <p class="info-text" id="descriptionHint">Be specific about colors, style, and details (max 500 characters)</p>
+                </div>
+
+                <button class="btn" id="generateBtn" aria-label="Generate asset based on description">Generate Asset</button>
+                <div class="loading" id="loading" role="status" aria-live="polite">
+                    <div class="spinner" aria-hidden="true"></div>
+                    <p>Generating your pixel art asset...</p>
+                </div>
+                <div class="message" id="successMessage" role="alert" aria-live="assertive"></div>
+                <div class="message error" id="errorMessage" role="alert" aria-live="assertive"></div>
+            </div>
+
+            <div class="preview-panel" id="previewPanel">
+                <h2>Your Asset</h2>
+                <div class="asset-display">
+                    <canvas id="assetCanvas" width="256" height="256" aria-label="Generated pixel art asset"></canvas>
+                </div>
+                <div class="button-group">
+                    <button class="btn btn-secondary" id="downloadBtn" aria-label="Download generated asset as PNG">⬇️ Download Asset</button>
+                    <button class="btn" id="animateBtn" aria-label="Add animation to the asset">✨ Animate Asset</button>
+                </div>
+
+                <div class="animation-section" id="animationSection">
+                    <h3>Choose Animation Type</h3>
+                    <div class="animation-grid" role="group" aria-label="Animation type selection">
+                        <button class="animation-btn" data-animation="idle" aria-pressed="false">🧍 Idle</button>
+                        <button class="animation-btn" data-animation="walk" aria-pressed="false">🚶 Walk</button>
+                        <button class="animation-btn" data-animation="jump" aria-pressed="false">🦘 Jump</button>
+                        <button class="animation-btn" data-animation="attack" aria-pressed="false">⚔️ Attack</button>
+                        <button class="animation-btn" data-animation="spin" aria-pressed="false">🌀 Spin</button>
+                        <button class="animation-btn" data-animation="float" aria-pressed="false">🎈 Float</button>
+                    </div>
+                    <div class="loading" id="animationLoading" role="status" aria-live="polite">
+                        <div class="spinner" aria-hidden="true"></div>
+                        <p>Applying animation...</p>
+                    </div>
+                    <div class="button-group" id="animationButtonGroup">
+                        <button class="btn btn-secondary" id="downloadAnimatedBtn" aria-label="Download animated asset">⬇️ Download Animated</button>
+                        <button class="btn" id="regenerateBtn" aria-label="Generate a new asset">🔄 Generate New</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // CONFIGURATION & CONSTANTS
+        const CONFIG = {
+            CANVAS_WIDTH: 256,
+            CANVAS_HEIGHT: 256,
+            PIXEL_SIZE: 16,
+            GENERATION_DELAY: 1500,
+            ANIMATION_DELAY: 1200,
+            DESCRIPTION_MAX_LENGTH: 500,
+            ANIMATION_SPEEDS: {
+                idle: 500,
+                walk: 300,
+                jump: 400,
+                attack: 200,
+                spin: 1000,
+                float: 600
+            },
+            ANIMATION_RANGES: {
+                idle: 5,
+                walk: 10,
+                jump: 20,
+                attack: 15,
+                spin: 0,
+                float: 8
+            }
+        };
+
+        // DOM ELEMENT CACHE
+        const DOM = {
+            generateBtn: document.getElementById('generateBtn'),
+            downloadBtn: document.getElementById('downloadBtn'),
+            animateBtn: document.getElementById('animateBtn'),
+            downloadAnimatedBtn: document.getElementById('downloadAnimatedBtn'),
+            regenerateBtn: document.getElementById('regenerateBtn'),
+            description: document.getElementById('description'),
+            canvas: document.getElementById('assetCanvas'),
+            previewPanel: document.getElementById('previewPanel'),
+            animationSection: document.getElementById('animationSection'),
+            animationButtonGroup: document.getElementById('animationButtonGroup'),
+            loading: document.getElementById('loading'),
+            animationLoading: document.getElementById('animationLoading'),
+            successMessage: document.getElementById('successMessage'),
+            errorMessage: document.getElementById('errorMessage')
+        };
+
+        const canvasContext = DOM.canvas ? DOM.canvas.getContext('2d') : null;
+
+        // COLOR PALETTES
+        const COLOR_PALETTES = {
+            character: ['#FF6B6B', '#4ECDC4', '#45B7D1', '#FFA07A', '#98D8C8'],
+            prop: ['#F7DC6F', '#BB8FCE', '#85C1E2', '#F8B88B', '#ABEBC6'],
+            background: ['#87CEEB', '#E0F6FF', '#90EE90', '#FFD700', '#FF69B4'],
+            enemy: ['#8B0000', '#DC143C', '#FF4500', '#FFD700', '#000000'],
+            item: ['#FFD700', '#C0C0C0', '#CD7F32', '#FF1493', '#00CED1'],
+            effect: ['#FF00FF', '#00FFFF', '#FFFF00', '#FF69B4', '#00FF00']
+        };
+
+        // STATE MANAGEMENT
+        const state = {
+            currentAssetType: 'character',
+            currentAsset: null,
+            currentAnimation: null,
+            isAnimated: false,
+            animationFrameId: null,
+            isGenerating: false,
+            isAnimating: false
+        };
+
+        // ASSET DRAWING FUNCTIONS
+        const assetDrawers = {
+            character: (ctx, ps, colors) => {
+                const centerX = CONFIG.CANVAS_WIDTH / 2;
+                const centerY = CONFIG.CANVAS_HEIGHT / 2;
+                ctx.fillStyle = colors[3];
+                fillPixelRect(ctx, centerX - 2 * ps, centerY - 4 * ps, 4 * ps, 4 * ps);
+                ctx.fillStyle = '#000000';
+                fillPixelRect(ctx, centerX - 1.5 * ps, centerY - 3 * ps, ps, ps);
+                fillPixelRect(ctx, centerX + 0.5 * ps, centerY - 3 * ps, ps, ps);
+                ctx.fillStyle = colors[0];
+                fillPixelRect(ctx, centerX - 2 * ps, centerY, 4 * ps, 4 * ps);
+                ctx.fillStyle = colors[3];
+                fillPixelRect(ctx, centerX - 4 * ps, centerY + ps, 2 * ps, 3 * ps);
+                fillPixelRect(ctx, centerX + 2 * ps, centerY + ps, 2 * ps, 3 * ps);
+                ctx.fillStyle = colors[1];
+                fillPixelRect(ctx, centerX - 1.5 * ps, centerY + 4 * ps, 1.5 * ps, 3 * ps);
+                fillPixelRect(ctx, centerX, centerY + 4 * ps, 1.5 * ps, 3 * ps);
+            },
+            prop: (ctx, ps, colors) => {
+                const centerX = CONFIG.CANVAS_WIDTH / 2;
+                const centerY = CONFIG.CANVAS_HEIGHT / 2;
+                ctx.fillStyle = colors[0];
+                fillPixelRect(ctx, centerX - 2 * ps, centerY - 2 * ps, 4 * ps, 4 * ps);
+                ctx.fillStyle = colors[1];
+                fillPixelRect(ctx, centerX - 2 * ps, centerY - 2 * ps, 4 * ps, ps);
+                ctx.fillStyle = colors[2];
+                fillPixelRect(ctx, centerX - 0.5 * ps, centerY, ps, ps);
+            },
+            background: (ctx, ps, colors) => {
+                ctx.fillStyle = colors[0];
+                ctx.fillRect(0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT / 2);
+                ctx.fillStyle = colors[2];
+                ctx.fillRect(0, CONFIG.CANVAS_HEIGHT / 2, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT / 2);
+                ctx.fillStyle = colors[3];
+                fillPixelRect(ctx, 200, 40, 3 * ps, 3 * ps);
+                ctx.fillStyle = '#FFFFFF';
+                fillPixelRect(ctx, 50, 60, 4 * ps, 2 * ps);
+                fillPixelRect(ctx, 150, 80, 3 * ps, 2 * ps);
+            },
+            enemy: (ctx, ps, colors) => {
+                const centerX = CONFIG.CANVAS_WIDTH / 2;
+                const centerY = CONFIG.CANVAS_HEIGHT / 2;
+                ctx.fillStyle = colors[0];
+                fillPixelRect(ctx, centerX - 2 * ps, centerY - 4 * ps, 4 * ps, 4 * ps);
+                ctx.fillStyle = colors[3];
+                fillPixelRect(ctx, centerX - 1.5 * ps, centerY - 3 * ps, ps, ps);
+                fillPixelRect(ctx, centerX + 0.5 * ps, centerY - 3 * ps, ps, ps);
+                ctx.fillStyle = colors[1];
+                fillPixelRect(ctx, centerX - 2 * ps, centerY, 4 * ps, 4 * ps);
+                ctx.fillStyle = colors[2];
+                fillPixelRect(ctx, centerX - 3 * ps, centerY + ps, ps, 2 * ps);
+                fillPixelRect(ctx, centerX + 2 * ps, centerY + ps, ps, 2 * ps);
+            },
+            item: (ctx, ps, colors) => {
+                const centerX = CONFIG.CANVAS_WIDTH / 2;
+                const centerY = CONFIG.CANVAS_HEIGHT / 2;
+                ctx.fillStyle = colors[1];
+                fillPixelRect(ctx, centerX - ps, centerY - 4 * ps, 2 * ps, 5 * ps);
+                ctx.fillStyle = colors[0];
+                fillPixelRect(ctx, centerX - 0.5 * ps, centerY + ps, ps, 2 * ps);
+                ctx.fillStyle = colors[2];
+                fillPixelRect(ctx, centerX - 2 * ps, centerY + ps, 4 * ps, ps);
+            },
+            effect: (ctx, ps, colors) => {
+                const centerX = CONFIG.CANVAS_WIDTH / 2;
+                const centerY = CONFIG.CANVAS_HEIGHT / 2;
+                for (let i = 0; i < 8; i++) {
+                    const angle = (i / 8) * Math.PI * 2;
+                    const x = centerX + Math.cos(angle) * 3 * ps;
+                    const y = centerY + Math.sin(angle) * 3 * ps;
+                    ctx.fillStyle = colors[i % colors.length];
+                    fillPixelRect(ctx, x - ps / 2, y - ps / 2, ps, ps);
+                }
+                ctx.fillStyle = colors[0];
+                fillPixelRect(ctx, centerX - ps, centerY - ps, 2 * ps, 2 * ps);
+            }
+        };
+
+        // UTILITY FUNCTIONS
+        function fillPixelRect(ctx, x, y, width, height) {
+            if (!ctx) return;
+            ctx.fillRect(Math.round(x), Math.round(y), Math.round(width), Math.round(height));
+        }
+
+        function getColorPalette(type) {
+            return COLOR_PALETTES[type] || COLOR_PALETTES.character;
+        }
+
+        function sanitizeInput(input) {
+            if (typeof input !== 'string') return '';
+            return input.trim().slice(0, CONFIG.DESCRIPTION_MAX_LENGTH);
+        }
+
+        function showMessage(message, type = 'info') {
+            const messageEl = DOM.errorMessage;
+            if (!messageEl) return;
+            messageEl.textContent = message;
+            messageEl.className = `message ${type} active`;
+            if (type !== 'error') {
+                setTimeout(() => {
+                    messageEl.classList.remove('active');
+                }, 3000);
+            }
+        }
+
+        function showError(message) {
+            console.error('Error:', message);
+            showMessage(message, 'error');
+        }
+
+        function showSuccess(message) {
+            showMessage('✓ ' + message, 'success');
+        }
+
+        function setLoading(isLoading, element = DOM.loading) {
+            if (!element) return;
+            if (isLoading) {
+                element.classList.add('active');
+            } else {
+                element.classList.remove('active');
+            }
+        }
+
+        function setButtonDisabled(button, disabled) {
+            if (!button) return;
+            button.disabled = disabled;
+            button.setAttribute('aria-busy', disabled);
+        }
+
+        function updateAriaPressed(buttons, activeButton) {
+            buttons.forEach(btn => {
+                const isActive = btn === activeButton;
+                btn.setAttribute('aria-pressed', isActive);
+                if (isActive) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+        }
+
+        function clearCanvas() {
+            if (!canvasContext) return;
+            canvasContext.clearRect(0, 0, CONFIG.CANVAS_WIDTH, CONFIG.CANVAS_HEIGHT);
+        }
+
+        function stopAnimation() {
+            state.isAnimated = false;
+            if (state.animationFrameId) {
+                cancelAnimationFrame(state.animationFrameId);
+                state.animationFrameId = null;
+            }
+        }
+
+        // ASSET GENERATION
+        function drawPixelAsset() {
+            try {
+                if (!canvasContext) {
+                    throw new Error('Canvas context not available');
+                }
+                clearCanvas();
+                const colors = getColorPalette(state.currentAssetType);
+                const drawer = assetDrawers[state.currentAssetType];
+                if (!drawer) {
+                    throw new Error(`No drawer found for asset type: ${state.currentAssetType}`);
+                }
+               drawer(canvasContext, CONFIG.PIXEL_SIZE, colors);
+            } catch (error) {
+                console.error('Error drawing asset:', error);
+                showError('Failed to draw asset: ' + error.message);
+            }
+        }
+
+        function generateAsset() {
+            try {
+                const description = sanitizeInput(DOM.description.value);
+                if (!description) {
+                    showError('Please describe your asset');
+                    DOM.description.focus();
+                    return;
+                }
+
+                if (state.isGenerating) {
+                    showError('Asset generation already in progress');
+                    return;
+                }
+
+                state.isGenerating = true;
+                setLoading(true, DOM.loading);
+                setButtonDisabled(DOM.generateBtn, true);
+
+                setTimeout(() => {
+                    try {
+                        state.currentAsset = {
+                            type: state.currentAssetType,
+                            description: description,
+                            timestamp: Date.now()
+                        };
+
+                        drawPixelAsset();
+                        showPreview();
+                        showSuccess('Asset generated successfully!');
+
+                        state.isGenerating = false;
+                        setLoading(false, DOM.loading);
+                        setButtonDisabled(DOM.generateBtn, false);
+                    } catch (error) {
+                        console.error('Generation error:', error);
+                        showError('Failed to generate asset');
+                        state.isGenerating = false;
+                        setLoading(false, DOM.loading);
+                        setButtonDisabled(DOM.generateBtn, false);
+                    }
+                }, CONFIG.GENERATION_DELAY);
+
+            } catch (error) {
+                console.error('Generate asset error:', error);
+                showError('An unexpected error occurred');
+                state.isGenerating = false;
+                setLoading(false, DOM.loading);
+                setButtonDisabled(DOM.generateBtn, false);
+            }
+        }
+
+        function showPreview() {
+            try {
+                if (!DOM.previewPanel) return;
+                DOM.previewPanel.classList.add('active');
+                DOM.animationSection.classList.remove('active');
+                DOM.animationButtonGroup.classList.remove('active');
+                stopAnimation();
+                state.isAnimated = false;
+            } catch (error) {
+                console.error('Show preview error:', error);
+            }
+        }
+
+        // ANIMATION FUNCTIONS
+        function showAnimationOptions() {
+            try {
+                if (!DOM.animationSection) return;
+                DOM.animationSection.classList.add('active');
+            } catch (error) {
+                console.error('Show animation options error:', error);
+            }
+        }
+
+        function applyAnimation() {
+            try {
+                if (!state.currentAnimation) {
+                    showError('Please select an animation type');
+                    return;
+                }
+
+                if (state.isAnimating) {
+                    showError('Animation already in progress');
+                    return;
+                }
+
+                state.isAnimating = true;
+                setLoading(true, DOM.animationLoading);
+
+                setTimeout(() => {
+                    try {
+                        drawAnimatedAsset();
+                        state.isAnimating = false;
+                        setLoading(false, DOM.animationLoading);
+                        DOM.animationButtonGroup.classList.add('active');
+                    } catch (error) {
+                        console.error('Animation error:', error);
+                        showError('Failed to apply animation');
+                        state.isAnimating = false;
+                        setLoading(false, DOM.animationLoading);
+                    }
+                }, CONFIG.ANIMATION_DELAY);
+
+            } catch (error) {
+                console.error('Apply animation error:', error);
+                showError('An unexpected error occurred');
+                state.isAnimating = false;
+                setLoading(false, DOM.animationLoading);
+            }
+        }
+
+        function drawAnimatedAsset() {
+            try {
+                if (!canvasContext) {
+                    throw new Error('Canvas context not available');
+                }
+
+                clearCanvas();
+
+                const colors = getColorPalette(state.currentAssetType);
+                const drawer = assetDrawers[state.currentAssetType];
+
+                if (!drawer) {
+                    throw new Error(`No drawer found for asset type: ${state.currentAssetType}`);
+                }
+
+                canvasContext.save();
+
+                const centerX = CONFIG.CANVAS_WIDTH / 2;
+                const centerY = CONFIG.CANVAS_HEIGHT / 2;
+                const animationSpeed = CONFIG.ANIMATION_SPEEDS[state.currentAnimation] || 500;
+                const animationRange = CONFIG.ANIMATION_RANGES[state.currentAnimation] || 0;
+                const time = Date.now();
+
+                switch (state.currentAnimation) {
+                    case 'idle':
+                        canvasContext.translate(0, Math.sin(time / animationSpeed) * animationRange);
+                        break;
+                    case 'walk':
+                        canvasContext.translate(Math.sin(time / animationSpeed) * animationRange, 0);
+                        break;
+                    case 'jump':
+                        const jumpHeight = Math.abs(Math.sin(time / animationSpeed)) * animationRange;
+                        canvasContext.translate(0, -jumpHeight);
+                        break;
+                    case 'spin':
+                        canvasContext.translate(centerX, centerY);
+                        canvasContext.rotate((time / animationSpeed) * Math.PI * 2);
+                        canvasContext.translate(-centerX, -centerY);
+                        break;
+                    case 'float':
+                        canvasContext.translate(
+                            Math.sin(time / animationSpeed) * animationRange,
+                            Math.cos(time / animationSpeed) * animationRange
+                        );
+                        break;
+                    case 'attack':
+                        canvasContext.translate(Math.sin(time / animationSpeed) * animationRange, 0);
+                        break;
+                }
+
+                drawer(canvasContext, CONFIG.PIXEL_SIZE, colors);
+                canvasContext.restore();
+
+                if (state.isAnimated) {
+                    state.animationFrameId = requestAnimationFrame(drawAnimatedAsset);
+                }
+            } catch (error) {
+                console.error('Draw animated asset error:', error);
+                showError('Failed to draw animation');
+            }
+        }
+
+        // DOWNLOAD FUNCTIONS
+        function downloadAsset() {
+            try {
+                if (!DOM.canvas) {
+                    throw new Error('Canvas not available');
+                }
+
+                if (!state.currentAsset) {
+                    showError('No asset to download');
+                    return;
+                }
+
+                const link = document.createElement('a');
+                link.href = DOM.canvas.toDataURL('image/png');
+                link.download = `${state.currentAssetType}_asset_${state.currentAsset.timestamp}.png`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showSuccess('Asset downloaded successfully!');
+            } catch (error) {
+                console.error('Download error:', error);
+                showError('Failed to download asset: ' + error.message);
+            }
+        }
+
+        function downloadAnimated() {
+            try {
+                if (!DOM.canvas) {
+                    throw new Error('Canvas not available');
+                }
+
+                if (!state.currentAsset || !state.currentAnimation) {
+                    showError('No animated asset to download');
+                    return;
+                }
+
+                const link = document.createElement('a');
+                link.href = DOM.canvas.toDataURL('image/png');
+                link.download = `${state.currentAssetType}_${state.currentAnimation}_${state.currentAsset.timestamp}.png`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                showSuccess('Animated asset downloaded successfully!');
+            } catch (error) {
+                console.error('Download animated error:', error);
+                showError('Failed to download animated asset: ' + error.message);
+            }
+        }
+
+        // RESET FUNCTIONS
+        function regenerateAsset() {
+            try {
+                stopAnimation();
+                state.isAnimated = false;
+                state.currentAnimation = null;
+                DOM.previewPanel.classList.remove('active');
+                DOM.animationSection.classList.remove('active');
+                DOM.animationButtonGroup.classList.remove('active');
+                DOM.description.value = '';
+                DOM.description.focus();
+                showSuccess('Ready to generate a new asset');
+            } catch (error) {
+                console.error('Regenerate error:', error);
+            }
+        }
+
+        // EVENT LISTENERS - ASSET TYPE SELECTION
+        document.addEventListener('click', (event) => {
+            try {
+                if (event.target.classList.contains('asset-btn')) {
+                    const buttons = document.querySelectorAll('.asset-btn');
+                    updateAriaPressed(buttons, event.target);
+                    state.currentAssetType = event.target.dataset.type;
+                }
+            } catch (error) {
+                console.error('Asset type selection error:', error);
+            }
+        });
+
+        // EVENT LISTENERS - ANIMATION SELECTION
+        document.addEventListener('click', (event) => {
+            try {
+                if (event.target.classList.contains('animation-btn')) {
+                    const buttons = document.querySelectorAll('.animation-btn');
+                    updateAriaPressed(buttons, event.target);
+                    state.currentAnimation = event.target.dataset.animation;
+                    state.isAnimated = true;
+                    applyAnimation();
+                }
+            } catch (error) {
+                console.error('Animation selection error:', error);
+            }
+        });
+
+        // EVENT LISTENERS - BUTTONS
+        if (DOM.generateBtn) {
+            DOM.generateBtn.addEventListener('click', generateAsset);
+        }
+
+        if (DOM.downloadBtn) {
+            DOM.downloadBtn.addEventListener('click', downloadAsset);
+        }
+
+        if (DOM.animateBtn) {
+            DOM.animateBtn.addEventListener('click', showAnimationOptions);
+        }
+
+        if (DOM.downloadAnimatedBtn) {
+            DOM.downloadAnimatedBtn.addEventListener('click', downloadAnimated);
+        }
+
+        if (DOM.regenerateBtn) {
+            DOM.regenerateBtn.addEventListener('click', regenerateAsset);
+        }
+
+        // EVENT LISTENERS - KEYBOARD SHORTCUTS
+        document.addEventListener('keydown', (event) => {
+            try {
+                if (event.key === 'Enter' && event.ctrlKey && DOM.description === document.activeElement) {
+                    generateAsset();
+                }
+
+                if (event.key === 'Escape' && DOM.animationSection.classList.contains('active')) {
+                    DOM.animationSection.classList.remove('active');
+                    stopAnimation();
+                }
+            } catch (error) {
+                console.error('Keyboard event error:', error);
+            }
+        });
+
+        // EVENT LISTENERS - TEXTAREA VALIDATION
+        if (DOM.description) {
+            DOM.description.addEventListener('input', (event) => {
+                try {
+                    const length = event.target.value.length;
+                    const remaining = CONFIG.DESCRIPTION_MAX_LENGTH - length;
+                    
+                    if (remaining < 50 && remaining > 0) {
+                        console.log(`${remaining} characters remaining`);
+                    }
+                } catch (error) {
+                    console.error('Textarea input error:', error);
+                }
+            });
+        }
+
+        // INITIALIZATION
+        function initialize() {
+            try {
+                const criticalElements = [
+                    DOM.generateBtn,
+                    DOM.canvas,
+                    DOM.previewPanel,
+                    DOM.description
+                ];
+
+                const missingElements = criticalElements.filter(el => !el);
+                if (missingElements.length > 0) {
+                    throw new Error('Critical DOM elements missing');
+                }
+
+                state.currentAssetType = 'character';
+                state.currentAsset = null;
+                state.currentAnimation = null;
+                state.isAnimated = false;
+
+                DOM.description.focus();
+
+                console.log('AI Gaming Asset Generator initialized successfully');
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showError('Failed to initialize application');
+            }
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initialize);
+        } else {
+            initialize();
+        }
+
+        // CLEANUP ON PAGE UNLOAD
+        window.addEventListener('beforeunload', () => {
+            stopAnimation();
+        });
+    </script>
+</body>
+</html>
